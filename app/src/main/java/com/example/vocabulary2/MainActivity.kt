@@ -6,7 +6,6 @@ import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
-import com.example.vocabulary2.module.VocabularyModel
 import com.example.vocabulary2.service.APIService
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
@@ -23,14 +22,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var textInput: EditText;
     private lateinit var button: ImageButton;
     private lateinit var textOutput: TextView;
-    private lateinit var textDescription : TextView;
+    private lateinit var textDescription: TextView;
+    private var definitions: MutableList<String?> = mutableListOf("test");
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         Log.i("work", "workkkk")
         readJSONFromAssets()
-
         //getReqJson()
 
         //click event
@@ -75,19 +74,29 @@ class MainActivity : AppCompatActivity() {
                     Log.i("JSON2: ", "" + Gson().toJson(response.body()))
 
                     if (items != null) {
-                        for (i in 0 until items.count()) {
-                            val word = items[i].text
-                            val description = items[0]?.meanings?.get(0)?.definitions?.get(0)?.definition
-                            Log.i("description", ""+description)
-                            textDescription = findViewById(R.id.description)
-                            textDescription.text = description.toString();
+                        // ?: Elvis operator
+                        for (i in 0 until (items[0].meanings?.get(0)?.definitions?.count() ?: Log.e(
+                            "Retrofit error",
+                            response.code().toString()
+                        ))) {
+                            val word = items[0].text
+                            definitions.add(items[0]?.meanings?.get(0)?.definitions?.get(i)?.definition)
+
+                            Log.i("definition", "" + definitions)
+
+//                            textDescription = findViewById(R.id.definitions)
+//                            textDescription.text = definitions?.get(i).toString()
                         }
                     }
                 } else {
                     Log.e("Retrofit error", response.code().toString())
                 }
+                for (definition in definitions) {
+                    textDescription = findViewById(R.id.definitions)
+                    textDescription.text = definitions.toString().drop(6).dropLast(1)
+                        .replace(Regex("""(\.,|;)"""), " \n");
+                }
             }
-
         }
     }
 
@@ -95,8 +104,8 @@ class MainActivity : AppCompatActivity() {
     fun buttonCLick() {
         textInput = findViewById(R.id.SearchBar);
         textOutput = findViewById(R.id.word)
-         //println(textInput.text)
-        textOutput.text = textInput.text.substring(0,1).uppercase()+textInput.text.substring(1);
+        //println(textInput.text)
+        textOutput.text = textInput.text.substring(0, 1).uppercase() + textInput.text.substring(1);
         getReqJson(textOutput.text)
     }
 }

@@ -1,4 +1,4 @@
-package com.example.vocabulary2.module
+package com.example.vocabulary2.model
 
 import com.google.gson.annotations.SerializedName
 
