@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/ocean"
+    android:background="@drawable/sea"
     tools:context=".MainActivity">
 
 
@@ -29,7 +29,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/SearchBar"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/todo" />
 
 
     <LinearLayout
@@ -49,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="30sp"
-            android:fontFamily="@font/josefin_sans_light"
+            android:fontFamily="@font/josefin_sans_italic"
             android:gravity="center_horizontal"
             android:text="TypeWord"
             android:textColor="@color/white"

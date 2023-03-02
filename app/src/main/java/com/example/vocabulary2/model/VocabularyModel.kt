@@ -6,23 +6,23 @@ import com.google.gson.annotations.SerializedName
 class VocabularyModel {
 
     @SerializedName("word")
-    var text: String? = null;
-    var meaningWork: String? = null;
+    var text: String? = null
+    var meaningWork: String? = null
     var phonetics: List<Phonetics>? = null
-    var meanings: List<Meanings>? = null;
+    var meanings: List<Meanings>? = null
 }
 
 class Phonetics() {
-    var text: String? = null;
-    var audio: String? = null;
+    var text: String? = null
+    var audio: String? = null
 }
 
 class Meanings() {
-    var partOfSpeech: String? = null;
-    var definitions: List<Definition>? = null;
+    var partOfSpeech: String? = null
+    var definitions: List<Definition>? = null
 }
 
 class Definition {
-    var definition: String? = null;
-    var example: String? = null;
+    var definition: String? = null
+    var example: String? = null
 }

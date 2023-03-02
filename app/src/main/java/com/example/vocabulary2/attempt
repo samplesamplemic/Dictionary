@@ -1,0 +1,18 @@
+fun readJSONFromAssets() {
+        //read json file in raw folder
+        val jsonData = applicationContext.resources.openRawResource(
+        applicationContext.resources.getIdentifier(
+        "work",
+        "raw", applicationContext.packageName
+        )
+        ).bufferedReader().use { it.readText() }
+
+        //print json obj
+        val jsonArray = JSONArray(jsonData)
+        Log.d("JSON", "" + jsonArray)
+
+        //Mapping json obj
+        val jsonArrayEl = jsonArray.getJSONObject(0) as JSONObject
+        val word = jsonArrayEl.get("word")
+        Log.i("word: ", "" + word)
+        }

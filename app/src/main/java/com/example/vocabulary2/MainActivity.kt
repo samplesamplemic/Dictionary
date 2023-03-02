@@ -6,12 +6,10 @@ import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import com.example.vocabulary2.service.APIService
 import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Retrofit
@@ -23,48 +21,39 @@ class MainActivity : AppCompatActivity() {
     private lateinit var button: ImageButton;
     private lateinit var textOutput: TextView;
     private lateinit var textDescription: TextView;
-    private var definitions: MutableList<String?> = mutableListOf("test");
+    private lateinit var definitions: MutableList<String?>;
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        Log.i("work", "workkkk")
-        readJSONFromAssets()
-        //getReqJson()
 
         //click event
         button = findViewById(R.id.button)
-        button.setOnClickListener { buttonCLick() }
+        button.setOnClickListener { fetchDataAndDisplayThem() }
     }
 
-    fun readJSONFromAssets() {
-        //read json file in raw folder
-        val jsonData = applicationContext.resources.openRawResource(
-            applicationContext.resources.getIdentifier(
-                "work",
-                "raw", applicationContext.packageName
-            )
-        ).bufferedReader().use { it.readText() }
+    private fun fetchData(){ //implement coroutines to fetch API
+        val word = Job()
+        val errorHandler = CoroutineExceptionHandler {coroutineContext, throwable ->
+            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
+        }
+        val scope = CoroutineScope(word + Dispatchers.Main)
 
-        //print json obj
-        val jsonArray = JSONArray(jsonData)
-        Log.d("JSON", "" + jsonArray)
+        scope.launch(errorHandler) {
 
-        //Mapping json obj
-        val jsonArrayEl = jsonArray.getJSONObject(0) as JSONObject
-        val word = jsonArrayEl.get("word")
-        Log.i("word: ", "" + word)
+        }
+
     }
 
-    fun getReqJson(word: CharSequence?) {
+    private fun getReqJson(word: CharSequence?) {
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api.dictionaryapi.dev/api/v2/entries/en/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
         val service = retrofit.create(APIService::class.java)
-        //Kotlin’s Coroutines allow the use of suspend functions // async flow
-        //A CoroutineScope defines a lifecycle
+
         CoroutineScope(Dispatchers.IO).launch {
             val response = service.getWord(word)
             withContext(Dispatchers.Main) {
@@ -84,8 +73,6 @@ class MainActivity : AppCompatActivity() {
 
                             Log.i("definition", "" + definitions)
 
-//                            textDescription = findViewById(R.id.definitions)
-//                            textDescription.text = definitions?.get(i).toString()
                         }
                     }
                 } else {
@@ -101,10 +88,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     //Set word in textView from searchBar by click button
-    fun buttonCLick() {
+    private fun fetchDataAndDisplayThem() {
         textInput = findViewById(R.id.SearchBar);
         textOutput = findViewById(R.id.word)
-        //println(textInput.text)
         textOutput.text = textInput.text.substring(0, 1).uppercase() + textInput.text.substring(1);
         getReqJson(textOutput.text)
     }
